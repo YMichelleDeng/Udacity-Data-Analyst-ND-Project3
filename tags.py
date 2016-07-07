@@ -24,6 +24,8 @@ four tag categories in a dictionary:
 See the 'process_map' and 'test' functions for examples of the expected format.
 """
 
+""" Load the OSM file """
+OSMFILE = "hksample.osm"
 
 lower = re.compile(r'^([a-z]|_)*$')
 lower_colon = re.compile(r'^([a-z]|_)*:([a-z]|_)*$')
@@ -31,6 +33,7 @@ problemchars = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
 
 
 def key_type(element, keys):
+    """ count the criteria in dictionary for the content of the tag """
     if element.tag == "tag":
         lower_re = lower.search(element.attrib['k'])
         lower_colon_re = lower_colon.search(element.attrib['k'])
@@ -64,9 +67,9 @@ def test():
     # Note that the assertion below will be incorrect then.
     # Note as well that the test function here is only used in the Test Run;
     # when you submit, your code will be checked against a different dataset.
-    keys = process_map('example.osm')
+    keys = process_map(OSMFILE)
     pprint.pprint(keys)
-    assert keys == {'lower': 5, 'lower_colon': 0, 'other': 1, 'problemchars': 1}
+    # assert keys == {'lower': 5, 'lower_colon': 0, 'other': 1, 'problemchars': 1}
 
 
 if __name__ == "__main__":

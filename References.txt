@@ -11,3 +11,6 @@ https://discussions.udacity.com/t/lesson-6-tag-types-output-looks-correct-is-not
 https://discussions.udacity.com/t/lesson-6-iterative-parsing-comparing-two-dictionaries/32701/4
 https://docs.python.org/2/library/xml.etree.elementtree.html
 http://stackoverflow.com/questions/14947916/import-csv-to-sqlite
+http://www.diveintopython.net/regular_expressions/phone_numbers.html
+http://codereview.stackexchange.com/questions/97599/phone-number-extraction-with-regular-expressions
+http://stackoverflow.com/questions/3868753/find-phone-numbers-in-python-script

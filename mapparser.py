@@ -10,10 +10,16 @@ the map as value.
 
 Note that your code will be tested with a different data file than the 'example.osm'
 """
+
+
+""" Load the OSM file """
+OSMFILE = 'hksample.osm'
+
 import xml.etree.cElementTree as ET
 import pprint
 
 def count_tags(filename):
+    """ count tags in filename. Put the key in dictionary if it does not exist, otherwise increment."""
     tags={}
     for event, elem in ET.iterparse(filename, events=("start",)):
         if elem.tag in tags.keys():
@@ -27,16 +33,16 @@ def count_tags(filename):
 
 def test():
 
-    tags = count_tags('example.osm')
+    tags = count_tags(OSMFILE)
     pprint.pprint(tags)
-    assert tags == {'bounds': 1,
-                     'member': 3,
-                     'nd': 4,
-                     'node': 20,
-                     'osm': 1,
-                     'relation': 1,
-                     'tag': 7,
-                     'way': 1}
+#    assert tags == {'bounds': 1,
+#                     'member': 3,
+#                     'nd': 4,
+#                     'node': 20,
+#                     'osm': 1,
+#                     'relation': 1,
+#                     'tag': 7,
+#                     'way': 1}
 
     
 

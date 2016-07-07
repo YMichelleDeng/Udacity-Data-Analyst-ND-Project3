@@ -17,16 +17,21 @@ from collections import defaultdict
 import re
 import pprint
 
+""" Load the OSM file """
 #OSMFILE = "example.osm"
 #OSMFILE = "hksample.osm"
 OSMFILE = "hong-kong_china.osm"
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
-
+phone_pattern_re = re.compile(r'\D?(\d{0,4}?)\D{0,2}(\d{4})\D?(\d{4})$', re.VERBOSE)
 
 expected = ["Street", "Avenue", "Boulevard", "Drive", "Court", "Place", "Square", "Lane", "Road", 
             "Trail", "Terrace", "Parkway", "Plaza", "Path", "Commons", "Way", "Highway", "Circle"]
 
+phone_expected = ["852"]
+
+
 # UPDATE THIS VARIABLE
+"""Create a dictionary containing possible mistakes"""
 mapping = { "St": "Street",
             "St.": "Street",
             "st": "Street",
@@ -57,6 +62,10 @@ mapping = { "St": "Street",
             }
 
 
+"""Create a dictionary containing possible mistakes"""
+phone_mapping = { "", "853"}
+
+
 def audit_street_type(street_types, street_name):
     m = street_type_re.search(street_name)
     if m:
@@ -66,7 +75,8 @@ def audit_street_type(street_types, street_name):
 
 
 def is_street_name(elem):
-    return (elem.attrib['k'] == "addr:street")
+    """Extract street names from osmfile. Perhaps the addr:full should also need to be fixed"""
+    return (elem.attrib['k'] == "addr:street") or (elem.attrib['k'] == "addr:full")
 
 
 def audit(osmfile):
@@ -78,12 +88,13 @@ def audit(osmfile):
             for tag in elem.iter("tag"):
                 if is_street_name(tag):
                     audit_street_type(street_types, tag.attrib['v'])
+                    
     osm_file.close()
     return street_types
 
 
 def update_name(name, mapping):
-    # YOUR CODE HERE
+    """Fixed the abreviate street names according to the mapping dictionary.""" 
     words = name.split()
     for w in range(len(words)):
         if words[w] in mapping:
@@ -93,19 +104,72 @@ def update_name(name, mapping):
     return name
 
 
-def test():
-    st_types = audit(OSMFILE)
-    #assert len(st_types) == 3
-    pprint.pprint(dict(st_types))
 
-    for st_type, ways in st_types.iteritems():
-        for name in ways:
-            better_name = update_name(name, mapping)
-            print name, "=>", better_name
-            if name == "West Lexington St.":
-                assert better_name == "West Lexington Street"
-            if name == "Baldwin Rd.":
-                assert better_name == "Baldwin Road"
+
+def audit_phone_pattern(phone_patterns, phone_number):
+    m = phone_pattern_re.search(phone_number)
+    if m:
+        phone_pattern = m.groups()[0]
+        if phone_pattern not in phone_expected:
+            phone_patterns[phone_pattern].add(phone_number)
+
+
+def is_phone_number(elem):
+    """Extract phone_numbers from osmfile."""
+    return (elem.attrib['k'] == "phone")
+
+
+def audit_phone(osmfile):
+    osm_file = open(osmfile, "r")
+    phone_patterns = defaultdict(set)
+    for event, elem in ET.iterparse(osm_file, events=("start",)):
+
+        if elem.tag == "node" or elem.tag == "way":
+            for tag in elem.iter("tag"):
+                if is_phone_number(tag):
+                    audit_phone_pattern(phone_patterns, tag.attrib['v'])
+                    
+    osm_file.close()
+    return phone_patterns
+
+
+def update_phone(phone, phone_mapping):
+    """Fixed the phone numbers. """
+    results = []
+    for iphone in re.split(',|;',phone):
+        patterns = phone_pattern_re.search(iphone)
+        if patterns:
+            numbers = patterns.groups()
+            if numbers[0] == "852":
+                results.append(re.compile(r'\D?(\d{0,4}?)\D{0,2}(\d{4})\D?(\d{4})$', iphone))
+            elif numbers[0] in phone_mapping:
+                results.append ("+852"+ " " + numbers[1] + numbers[2])
+            return ';'.join(results)
+
+
+
+def test():
+    #st_types = audit(OSMFILE)
+    #assert len(st_types) == 3
+    #pprint.pprint(dict(st_types))
+
+    #for st_type, ways in st_types.iteritems():
+    #    for name in ways:
+    #        better_name = update_name(name, mapping)
+    #        print name, "=>", better_name
+    #        if name == "West Lexington St.":
+    #            assert better_name == "West Lexington Street"
+    #        if name == "Baldwin Rd.":
+    #            assert better_name == "Baldwin Road"
+
+    phone_types = audit_phone(OSMFILE)
+    pprint.pprint(dict(phone_types))
+
+    for phone_types, ways in phone_types.iteritems():
+        for phone in ways:
+            better_phone = update_phone(phone, phone_mapping)
+            print phone, "=>", better_phone
+
 
 
 if __name__ == '__main__':

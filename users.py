@@ -11,11 +11,16 @@ have contributed to the map in this particular area!
 The function process_map should return a set of unique user IDs ("uid")
 """
 
+""" Load the OSM file """
+OSMFILE = "hksample.osm"
+
+
 def get_user(element):
     return
 
 
 def process_map(filename):
+    """ count the user id in the filename. """
     users = set()
     users = {}
     for _, element in ET.iterparse(filename):
@@ -30,9 +35,9 @@ def process_map(filename):
 
 def test():
 
-    users = process_map('example.osm')
+    users = process_map(OSMFILE)
     pprint.pprint(users)
-    assert len(users) == 6
+    # assert len(users) == 6
 
 
 
