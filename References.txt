@@ -1,0 +1,13 @@
+References:
+
+https://discussions.udacity.com/t/cerberus-for-my-anaconda-python-setup-windows-or-mac/167337/4
+https://discussions.udacity.com/t/quiz-tag-types-information/166078/2
+https://discussions.udacity.com/t/preparing-for-database-sql/164329/3
+https://discussions.udacity.com/t/case-study-iterative-parsing/165972/12
+https://discussions.udacity.com/t/iterative-parsing-using-iterparse/167980/2
+https://discussions.udacity.com/t/explain-this-code-snippet/166916/3
+https://discussions.udacity.com/t/lesson-6-last-problem-how-to-handle-keyerrors/161671
+https://discussions.udacity.com/t/lesson-6-tag-types-output-looks-correct-is-not/36617/5
+https://discussions.udacity.com/t/lesson-6-iterative-parsing-comparing-two-dictionaries/32701/4
+https://docs.python.org/2/library/xml.etree.elementtree.html
+http://stackoverflow.com/questions/14947916/import-csv-to-sqlite
